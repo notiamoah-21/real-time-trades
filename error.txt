@@ -1,0 +1,17 @@
+/root/.ipykernel/1554/command-251503601370610-1545423073:11: UserWarning: You appear to be connected to a CosmosDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/cosmosdb
+  mongo_client = MongoClient(cosmos_connection_string)
+[STREAM_FAILED] Query [id = a2d988a3-bdd2-4aa5-bcd8-ecd09180b181, runId = 69357782-b167-4601-9c17-3f51c94bd220] terminated with exception: Input byte array has wrong 4-byte ending unit SQLSTATE: XXKST
+File <command-251503601370610>, line 65
+     60 parsed_stream.writeStream \
+     61     .foreachBatch(write_to_cosmos) \
+     62     .start()
+     64 # Await termination
+---> 65 spark.streams.awaitAnyTermination(3600)
+File /databricks/spark/python/pyspark/errors/exceptions/captured.py:269, in capture_sql_exception.<locals>.deco(*a, **kw)
+    265 converted = convert_exception(e.java_exception)
+    266 if not isinstance(converted, UnknownException):
+    267     # Hide where the exception came from that shows a non-Pythonic
+    268     # JVM exception message.
+--> 269     raise converted from None
+    270 else:
+    271     raise
