@@ -1,26 +1,11 @@
-# Write the stream data to Cosmos DB with dynamic database and collection using pymongo
-def write_to_cosmos(batch_df, batch_id):
-    # Collect all rows in the batch
-    for row in batch_df.collect():
-        database, collection = get_cosmos_database_and_collection(row)
-        
-        # Connect to the appropriate Cosmos DB database and collection
-        db = mongo_client[database]
-        collection = db[collection]
-
-        # Convert the row to a dictionary (MongoDB document)
-        trade_data = {
-            "tradeId": row['tradeId'],
-            "assetClass": row['assetClass'],
-            "tradeCaptureSystem": row['tradeCaptureSystem'],
-            "symbol": row['symbol'],
-            "price": row['price'],
-            "quantity": row['quantity'],
-            "tradeType": row['tradeType'],
-            "timestamp": row['timestamp'],
-            "traderId": row['traderId'],
-            "exchange": row['exchange']
-        }
-
-        # Insert the trade data into Cosmos DB
-        collection.insert_one(trade_data)
+# Define a function to dynamically set the Cosmos DB collection based on the incoming data
+def get_cosmos_database_and_collection(row):
+    # Extract asset class and trade capture system for dynamic database/collection
+    asset_class = row['assetClass']
+    trade_capture_system = row['tradeCaptureSystem']
+    
+    # Use fixed Cosmos DB URI, dynamic database and collection
+    database = asset_class  # Dynamic database
+    collection = trade_capture_system  # Dynamic collection
+    
+    return database, collection
