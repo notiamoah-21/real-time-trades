@@ -13,8 +13,9 @@ org.mongodb.spark:mongo-spark-connector_2.12:10.4.0
 
 
 ## add this in a new cell 
+# replace variables with your values
 
-adls = ''
+adls_access_key = ''
 storageAccountName = ""
 blobContainerName = ""
 mountPoint = "/mnt/checkpoints/"
@@ -34,6 +35,7 @@ if not any(mount.mountPoint == mountPoint for mount in dbutils.fs.mounts()):
 
 # Make surce you have a cosmo db for mongo db, and create a database called trade and within that created a collection 
 ## add this code in a new cell 
+# replace variables with your values, mongodb_uri and connectionString
 
 
 from pyspark.sql import SparkSession
