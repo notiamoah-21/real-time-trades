@@ -1,5 +1,5 @@
 from pyspark.sql.functions import col
-from mongo_writer import write_to_mongo
+from storage.mongo_writer import write_to_mongo
 
 def store_data_dynamically(batch_df, mongodb_uri):
     """
