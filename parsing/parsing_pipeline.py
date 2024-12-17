@@ -1,25 +1,22 @@
-from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col
+from parsing.trade_schema import trade_schema
 
-def read_stream_from_event_hub(spark, connection_string):
+def parse_raw_data(raw_stream):
     """
-    Reads a stream from Azure Event Hubs and returns a Spark DataFrame.
+    Parses raw binary data from Event Hubs into a structured DataFrame.
 
     Args:
-        spark (SparkSession): Spark session object.
-        connection_string (str): Azure Event Hubs connection string.
+        raw_stream (DataFrame): DataFrame with raw data from Event Hubs.
 
     Returns:
-        DataFrame: Spark DataFrame representing the stream.
+        DataFrame: DataFrame with a structured schema.
     """
-    # Configure Event Hubs connection
-    eh_conf = {
-        "eventhubs.connectionString": spark._jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(connection_string)
-    }
+    # Extract the 'body' column and cast it to STRING
+    parsed_stream = raw_stream.selectExpr("CAST(body AS STRING) AS body")
 
-    # Read stream from Event Hubs
-    event_hub_stream = spark.readStream \
-        .format("eventhubs") \
-        .options(**eh_conf) \
-        .load()
+    # Parse the JSON string in 'body' to a structured schema
+    structured_stream = parsed_stream.select(
+        from_json(col("body"), trade_schema).alias("trade")
+    ).select("trade.*")  # Flatten the nested structure
 
-    return event_hub_stream
+    return structured_stream
