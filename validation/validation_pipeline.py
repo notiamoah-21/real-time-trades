@@ -1,8 +1,8 @@
-from pyspark.sql.functions import col
-from equities_rules import validate_equities
-from fixed_income_rules import validate_fixed_income
-from commodities_rules import validate_commodities
-from crypto_rules import validate_crypto
+from pyspark.sql.functions import when, col
+from validation.validation_rules.equities_rules import validate_equities
+from validation.validation_rules.fixed_income_rules import validate_fixed_income
+from validation.validation_rules.commodities_rules import validate_commodities
+from validation.validation_rules.real_estate_rules import validate_real_estate 
 
 def apply_validation_rules(df):
     """
@@ -24,8 +24,8 @@ def apply_validation_rules(df):
         ).when(
             col("assetClass") == "commodities", validate_commodities(df)
         ).when(
-            col("assetClass") == "crypto", validate_crypto(df)
+            col("assetClass") == "real_estate", validate_real_estate(df)
         ).otherwise(False)  # Default: Valid if no rules apply
     )
-    
+
     return validated_df
